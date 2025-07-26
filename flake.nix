@@ -5,61 +5,62 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
-  outputs = { self, nixpkgs }:
+  outputs = { self, nixpkgs }: # This is the function for the entire outputs attribute set
     let
+      # --- Define shared helpers and variables here (at the top of 'outputs' let-in) ---
       supportedSystems = [ "x86_64-linux" "aarch64-darwin" ];
       forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f system);
+
+      # Define the 'todoReporterPackage' ONCE here if it's used by multiple outputs.
+      # This avoids redefining it inside each 'forAllSystems' block.
+      # It takes 'pkgs' as an argument so it can be defined once and applied to each system's pkgs later.
+      todoReporterPackageFun = pkgs: pkgs.stdenv.mkDerivation {
+        pname = "todo-fixme-reporter";
+        version = "0.1.0";
+        src = ./.;
+        buildInputs = [ pkgs.python3 ];
+        installPhase = ''
+          mkdir -p $out/bin
+          cp $src/reporter.py $out/bin/todo-reporter-cli
+          chmod +x $out/bin/todo-reporter-cli
+        '';
+        meta = with pkgs.lib; {
+          description = self.description;
+          homepage = "https://github.com/AndariiDev/todo-fixme-reporter";
+          license = licenses.mit;
+        };
+      };
     in
-    forAllSystems (system: # We apply the function for all systems at this top-level
-      let
-        pkgs = import nixpkgs { inherit system; };
+    { # <--- This is the main outputs attribute set (it's NOT wrapped by forAllSystems here)
 
-        # --- Define the actual PACKAGE (derivation) that holds your script ---
-        # This creates a result in /nix/store/.../todo-fixme-reporter/bin/todo-reporter-cli
-        todoReporterPackage = pkgs.stdenv.mkDerivation {
-          pname = "todo-fixme-reporter";
-          version = "0.1.0"; # Version of your package
-
-          src = ./.; # The source of your entire repo (where reporter.py is)
-
-          # Build dependencies: We need python3 during the installation phase
-          buildInputs = [ pkgs.python3 ];
-
-          # This defines what happens during the build process to put the script into the $out path
-          installPhase = ''
-            mkdir -p $out/bin # Create the bin directory in the output
-            cp $src/reporter.py $out/bin/todo-reporter-cli # Copy your script into it
-            chmod +x $out/bin/todo-reporter-cli # Make it executable
-          '';
-
-          # Optional: Metadata for the package, useful for nixpkgs contribution later
-          meta = with pkgs.lib; {
-            description = self.description; # Uses the description from the flake
-            homepage = "https://github.com/AndariiDev/todo-fixme-reporter"; # Link to your repo
-            license = licenses.mit;
-            # maintainers = [ maintainers.your_github_handle_here ]; # Uncomment and fill if you add yourself to pkgs.maintainers
+      # --- 1. Define the 'apps' output (for 'nix run .') ---
+      apps = forAllSystems (system: # Apply forAllSystems only to the 'apps' block
+        let pkgs = import nixpkgs { inherit system; }; in
+        {
+          default = {
+            type = "app";
+            program = "${(todoReporterPackageFun pkgs)}/bin/todo-reporter-cli"; # Call the package function with pkgs
           };
-        };
+        }
+      );
 
-      in
-      {
-        # --- Define the 'apps' output, which just points to the executable inside our package ---
-        # This makes 'nix run .' work
-        apps.default = {
-          type = "app";
-          program = "${todoReporterPackage}/bin/todo-reporter-cli"; # Points to the executable inside the package
-        };
+      # --- 2. Define the 'packages' output (for 'nix build .' and 'nix profile install .') ---
+      packages = forAllSystems (system: # Apply forAllSystems only to the 'packages' block
+        let pkgs = import nixpkgs { inherit system; }; in
+        {
+          default = todoReporterPackageFun pkgs; # Call the package function with pkgs
+        }
+      );
 
-        # --- Define the 'packages' output, so it can be built and installed separately ---
-        # This makes 'nix build .' and 'nix profile install .' work
-        packages.default = todoReporterPackage;
+      # --- 3. Define the 'devShells' output (for 'nix develop') ---
+      devShells = forAllSystems (system: # Apply forAllSystems only to the 'devShells' block
+        let pkgs = import nixpkgs { inherit system; }; in
+        {
+          default = pkgs.mkShell {
+            packages = [ pkgs.python3 ];
+          };
+        }
+      );
 
-        # --- Define the 'devShells' output for development environment ---
-        # This makes 'nix develop' work
-        devShells.default = pkgs.mkShell {
-          packages = [ pkgs.python3 ]; # Ensures python3 is in your shell
-          # You can add other tools for development here, e.g., pkgs.helix, pkgs.git
-        };
-      }
-    );
+    }; # <--- End of the main outputs attribute set
 }
