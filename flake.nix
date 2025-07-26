@@ -33,7 +33,7 @@
         {
           default = {
             type = "app";
-            program = "${(todoReporterPackageFun { inherit pkgs; description = self.description; })}/bin/todo-reporter-cli";
+            program = "${(todoReporterPackageFun { pkgs = pkgs; description = self.description; })}/bin/todo-reporter-cli";
           };
         }
       );
@@ -41,7 +41,8 @@
       packages = forAllSystems (system:
         let pkgs = import nixpkgs { inherit system; }; in
         {
-          default = todoReporterPackageFun { inherit pkgs; description = self.description; };
+          default = todoReporterPackageFun { pkgs = pkgs; description = self.description; };
+        }
       );
 
       devShells = forAllSystems (system:
@@ -52,6 +53,5 @@
           };
         }
       );
-
     };
 }
