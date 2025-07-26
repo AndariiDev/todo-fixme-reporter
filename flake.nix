@@ -5,12 +5,12 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
-  outputs = { self, nixpkgs, description ? "A simple TODO/FIXME reporter for code projects" }:
+  outputs = { self, nixpkgs }:
     let
       supportedSystems = [ "x86_64-linux" "aarch64-darwin" ];
       forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f system);
 
-      todoReporterPackageFun = { pkgs, description }: pkgs.stdenv.mkDerivation {
+      todoReporterPackageFun = pkgs,: pkgs.stdenv.mkDerivation {
         pname = "todo-fixme-reporter";
         version = "0.1.0";
         src = ./.;
@@ -21,7 +21,7 @@
           chmod +x $out/bin/todo-reporter-cli
         '';
         meta = with pkgs.lib; {
-          description = description;
+          description = "A simple TODO/FIXME reporter for code projects";
           homepage = "https://github.com/AndariiDev/todo-fixme-reporter";
           license = licenses.mit;
         };
@@ -33,7 +33,7 @@
         {
           default = {
             type = "app";
-            program = "${(todoReporterPackageFun { pkgs = pkgs; description = self.description; })}/bin/todo-reporter-cli";
+            program = "${(todoReporterPackageFun pkgs)}/bin/todo-reporter-cli";
           };
         }
       );
@@ -41,7 +41,7 @@
       packages = forAllSystems (system:
         let pkgs = import nixpkgs { inherit system; }; in
         {
-          default = todoReporterPackageFun { pkgs = pkgs; description = description; };
+          default = todoReporterPackageFun pkgs;
         }
       );
 
