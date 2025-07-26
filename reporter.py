@@ -6,14 +6,18 @@ from datetime import datetime
 # Define a list of directory names to ignore during traversal
 # # Add or remove directories here to customize which folders are skipped
 directories_to_ignore = [".git", "__pycache__", "node_modules", "target", "build", "venv", ".vscode",]
+
 # # Add or remove extensions for files that will be checked
 target_extensions = [
-    ".py", ".md", ".txt", ".js", ".c", ".cpp", ".java", ".rs", ".nix", ".toml", ".sh", ".json", "yaml", "yml", ".go", ".php", ".rb", ".css", ".html", ".xml"
+    ".py", ".md", ".txt", ".js", ".ts", ".c", ".h", ".cpp", ".cs", ".java", ".rs", ".nix", ".toml", ".sh", ".yaml", ".yml", ".go", ".php", ".rb", ".css", ".html", ".xml"
 ]
+
 # Define a list of full path segments to ignore
 # This will cause the script to ignore any directory whose full path contains any of these stings
 paths_to_ignore = [ "/dotfiles/hyprland/themes/assets/" ] # Add more as needed
+
 found_todos = []
+
 report_file = "todo_report.txt" # change to desired filename of report
 
 # fundamental python idioms
@@ -21,28 +25,32 @@ report_file = "todo_report.txt" # change to desired filename of report
 # It's automatically set to __main__ when script is run directly
 # "__main__" (Dunder Main String) is a specific string literal to identify entry point of script
 if __name__ == "__main__": # "if" block only runs if script is executed directly; prevents functions from script to be run by other scripts
-    # Initialize project_path to None (default value here, 0)
+    # Initialize project_path to None
     project_path = None
 
-    if len(sys.argv) == 1: # if there is exactly one argument, do:
+    # sys.argv always contains script name as index 0
+    if len(sys.argv) == 1:  # exactly one argument
         project_path = os.getcwd()
-    elif len(sys.argv) == 2: # elif there are exactly two arguments, do:
+    elif len(sys.argv) == 2:  # exactly two arguments
         project_path = sys.argv[1]
-    else: # else there are more than two arguments, do:
+        if not os.path.isdir:
+            print(f"ERROR: invalid path: {sys.argv[1]}")
+            sys.exit(1)
+    else:  # more than two arguments
         print ("ERROR: only one optional argument accepted, use project directory")
         print (f"Usage: python {sys.argv[0]} [directory_path]")
         sys.exit(1)
 
     print(f"Searching in: {project_path}")
            
-    for (root,dirs,files) in os.walk(project_path, topdown=True):
-        should_skip_root = False # flag variable
+    for (root, dirs, files) in os.walk(project_path, topdown=True):
+        should_skip_root = False  # flag variable
         for bad_pattern in paths_to_ignore:
             if bad_pattern in root:
-                should_skip_root = True # Set flag
-                break # exit inner loop early
+                should_skip_root = True  # Set flag
+                break  # exit inner loop early
 
-        if should_skip_root: # check flag AFTER inner loop
+        if should_skip_root:  # check flag AFTER inner loop
             continue
         
         dirs[:] = [d for d in dirs if d not in directories_to_ignore]
@@ -52,7 +60,7 @@ if __name__ == "__main__": # "if" block only runs if script is executed directly
             # _, ext = os.path.splitext(f) # "_" = commonly used convention (not rule) to mark variable as "intentionally ignored" or "don't care"
             # if ext.lower() in target_extensions: # .lower for case-insensitive matching
             full_file_path = os.path.join(root,f)
-            print(f"Processing file: {full_file_path}") # FIXME: Temp print, replace with actual TODO logic later
+            print(f"Processing file: {full_file_path}")  # FIXME: Temp print, replace with actual TODO logic later
             with open(full_file_path, 'r', encoding="utf-8") as file_handle:
                 for line_number, current_line in enumerate(file_handle):
                     if "todo" in current_line.lower() or "fixme" in current_line.lower():
