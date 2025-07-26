@@ -5,7 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
-  outputs = { self, nixpkgs }:
+  outputs = { self, nixpkgs, description ? self.description or "Default flake description" }:
     let
       supportedSystems = [ "x86_64-linux" "aarch64-darwin" ];
       forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f system);
@@ -41,7 +41,7 @@
       packages = forAllSystems (system:
         let pkgs = import nixpkgs { inherit system; }; in
         {
-          default = todoReporterPackageFun { pkgs = pkgs; description = self.description; };
+          default = todoReporterPackageFun { pkgs = pkgs; description = description; };
         }
       );
 
