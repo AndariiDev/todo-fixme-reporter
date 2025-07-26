@@ -1,0 +1,34 @@
+{
+  description = "A simple TODO/FIXME reporter for code projects";
+
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+  };
+
+  outputs = { self, nixpkgs, }:
+      let
+        supportedSystems = [ "x86_64-linux" "aarch64-darwin" ];
+        forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f system);
+      in
+      {
+        apps = forAllSystems (system:
+          let
+            pkgs = import nixpkgs { inherit system; };
+          in
+          {
+            default = {
+              type = "app";
+              program = "${pkgs.python3}/bin/python ${./reporter.py}";
+            };
+          }
+        );
+
+        devShells = forAllSystems (system:
+          let pkgs = import nixpkgs { inherit system; }; in {
+            default = pkgs.mkShell {
+              packages = [ pkgs.python3 ];
+            };
+          }
+        );
+      };
+}

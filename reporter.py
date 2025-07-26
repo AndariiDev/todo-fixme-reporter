@@ -1,4 +1,4 @@
-# reporter.py
+#!/usr/bin/env python3
 import sys
 import os
 from datetime import datetime
@@ -61,6 +61,7 @@ if __name__ == "__main__": # "if" block only runs if script is executed directly
             # if ext.lower() in target_extensions: # .lower for case-insensitive matching
             full_file_path = os.path.join(root,f)
             print(f"Processing file: {full_file_path}")  # FIXME: Temp print, replace with actual TODO logic later
+            
             with open(full_file_path, 'r', encoding="utf-8") as file_handle:
                 for line_number, current_line in enumerate(file_handle):
                     if "todo" in current_line.lower() or "fixme" in current_line.lower():
@@ -74,7 +75,7 @@ if __name__ == "__main__": # "if" block only runs if script is executed directly
                         
     found_todos.sort(key=lambda item: item["filepath"])
     with open(report_file, 'w', encoding='utf-8') as report_file_handle:
-        report_file_handle.write("\n--- ALL Collected TODOs/FIXMEs ---\n\n")
+        report_file_handle.write("--- ALL Collected TODOs/FIXMEs ---\n\n")
         for todo_entry in found_todos:
             report_file_handle.write(f"File: {todo_entry['filepath']}\n")
             report_file_handle.write(f"  Line: {todo_entry['line_number']}: {todo_entry['content']}\n")
