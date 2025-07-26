@@ -14,6 +14,7 @@ target_extensions = [
 # This will cause the script to ignore any directory whose full path contains any of these stings
 paths_to_ignore = [ "/dotfiles/hyprland/themes/assets/" ] # Add more as needed
 found_todos = []
+report_file = "todo_report.txt" # change to desired filename of report
 
 # fundamental python idioms
 # __name__ (Dunder Name) is a special, built-in variable in Python
@@ -62,12 +63,14 @@ if __name__ == "__main__": # "if" block only runs if script is executed directly
                             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                         }
                         found_todos.append(todo_entry)
+                        
     found_todos.sort(key=lambda item: item["filepath"])
-    print("\n--- ALL Collected TODOs/FIXMEs ---")
-    for todo_entry in found_todos:
-        print(f"File: {todo_entry['filepath']}")
-        print(f"  Line: {todo_entry['line_number']}: {todo_entry['content']}")
-        print(f"  (Found: {todo_entry['timestamp']})")
-        print("-" * 40)
+    with open(report_file, 'w', encoding='utf-8') as report_file_handle:
+        report_file_handle.write("\n--- ALL Collected TODOs/FIXMEs ---\n\n")
+        for todo_entry in found_todos:
+            report_file_handle.write(f"File: {todo_entry['filepath']}\n")
+            report_file_handle.write(f"  Line: {todo_entry['line_number']}: {todo_entry['content']}\n")
+            report_file_handle.write(f"  (Found: {todo_entry['timestamp']})\n")
+            report_file_handle.write("-" * 40 + "\n")
 
-    # print (".............")
+    print(f"\nReport generated successfully in {report_file}")
