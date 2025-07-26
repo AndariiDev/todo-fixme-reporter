@@ -5,16 +5,12 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
-  outputs = { self, nixpkgs }: # This is the function for the entire outputs attribute set
+  outputs = { self, nixpkgs }:
     let
-      # --- Define shared helpers and variables here (at the top of 'outputs' let-in) ---
       supportedSystems = [ "x86_64-linux" "aarch64-darwin" ];
       forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f system);
 
-      # Define the 'todoReporterPackage' ONCE here if it's used by multiple outputs.
-      # This avoids redefining it inside each 'forAllSystems' block.
-      # It takes 'pkgs' as an argument so it can be defined once and applied to each system's pkgs later.
-      todoReporterPackageFun = pkgs: pkgs.stdenv.mkDerivation {
+      todoReporterPackageFun = { pkgs, description }: pkgs.stdenv.mkDerivation {
         pname = "todo-fixme-reporter";
         version = "0.1.0";
         src = ./.;
@@ -25,35 +21,30 @@
           chmod +x $out/bin/todo-reporter-cli
         '';
         meta = with pkgs.lib; {
-          description = self.description;
+          description = description;
           homepage = "https://github.com/AndariiDev/todo-fixme-reporter";
           license = licenses.mit;
         };
       };
     in
-    { # <--- This is the main outputs attribute set (it's NOT wrapped by forAllSystems here)
-
-      # --- 1. Define the 'apps' output (for 'nix run .') ---
-      apps = forAllSystems (system: # Apply forAllSystems only to the 'apps' block
+    {
+      apps = forAllSystems (system:
         let pkgs = import nixpkgs { inherit system; }; in
         {
           default = {
             type = "app";
-            program = "${(todoReporterPackageFun pkgs)}/bin/todo-reporter-cli"; # Call the package function with pkgs
+            program = "${(todoReporterPackageFun { inherit pkgs; description = self.description; })}/bin/todo-reporter-cli";
           };
         }
       );
 
-      # --- 2. Define the 'packages' output (for 'nix build .' and 'nix profile install .') ---
-      packages = forAllSystems (system: # Apply forAllSystems only to the 'packages' block
+      packages = forAllSystems (system:
         let pkgs = import nixpkgs { inherit system; }; in
         {
-          default = todoReporterPackageFun pkgs; # Call the package function with pkgs
-        }
+          default = todoReporterPackageFun { inherit pkgs; description = self.description; };
       );
 
-      # --- 3. Define the 'devShells' output (for 'nix develop') ---
-      devShells = forAllSystems (system: # Apply forAllSystems only to the 'devShells' block
+      devShells = forAllSystems (system:
         let pkgs = import nixpkgs { inherit system; }; in
         {
           default = pkgs.mkShell {
@@ -62,5 +53,5 @@
         }
       );
 
-    }; # <--- End of the main outputs attribute set
+    };
 }
