@@ -1,6 +1,7 @@
 # reporter.py
 import sys
 import os
+from datetime import datetime
 
 # Define a list of directory names to ignore during traversal
 # # Add or remove directories here to customize which folders are skipped
@@ -50,10 +51,23 @@ if __name__ == "__main__": # "if" block only runs if script is executed directly
             # _, ext = os.path.splitext(f) # "_" = commonly used convention (not rule) to mark variable as "intentionally ignored" or "don't care"
             # if ext.lower() in target_extensions: # .lower for case-insensitive matching
             full_file_path = os.path.join(root,f)
-            print(f"Processing file: {full_file_path}") # Temp print, replace with actual TODO logic later
+            print(f"Processing file: {full_file_path}") # FIXME: Temp print, replace with actual TODO logic later
             with open(full_file_path, 'r', encoding="utf-8") as file_handle:
                 for line_number, current_line in enumerate(file_handle):
                     if "todo" in current_line.lower() or "fixme" in current_line.lower():
-                        print("Found n cases, written to *filename*")
-                
-        # print (".............")
+                        todo_entry = {
+                            "filepath": full_file_path,
+                            "line_number": line_number + 1,
+                            "content": current_line.strip(),
+                            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        }
+                        found_todos.append(todo_entry)
+    found_todos.sort(key=lambda item: item["filepath"])
+    print("\n--- ALL Collected TODOs/FIXMEs ---")
+    for todo_entry in found_todos:
+        print(f"File: {todo_entry['filepath']}")
+        print(f"  Line: {todo_entry['line_number']}: {todo_entry['content']}")
+        print(f"  (Found: {todo_entry['timestamp']})")
+        print("-" * 40)
+
+    # print (".............")
