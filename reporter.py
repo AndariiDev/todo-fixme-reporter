@@ -12,6 +12,7 @@ target_extensions = [
 # Define a list of full path segments to ignore
 # This will cause the script to ignore any directory whose full path contains any of these stings
 paths_to_ignore = [ "/dotfiles/hyprland/themes/assets/" ] # Add more as needed
+found_todos = []
 
 # fundamental python idioms
 # __name__ (Dunder Name) is a special, built-in variable in Python
@@ -50,5 +51,9 @@ if __name__ == "__main__": # "if" block only runs if script is executed directly
             # if ext.lower() in target_extensions: # .lower for case-insensitive matching
             full_file_path = os.path.join(root,f)
             print(f"Processing file: {full_file_path}") # Temp print, replace with actual TODO logic later
+            with open(full_file_path, 'r', encoding="utf-8") as file_handle:
+                for line_number, current_line in enumerate(file_handle):
+                    if "todo" in current_line.lower() or "fixme" in current_line.lower():
+                        print("Found n cases, written to *filename*")
                 
         # print (".............")
