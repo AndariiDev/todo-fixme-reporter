@@ -10,7 +10,7 @@
       supportedSystems = [ "x86_64-linux" "aarch64-darwin" ];
       forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f system);
 
-      todoReporterPackageFun = pkgs,: pkgs.stdenv.mkDerivation {
+      todoReporterPackageFun = pkgs: pkgs.stdenv.mkDerivation {
         pname = "todo-fixme-reporter";
         version = "0.1.0";
         src = ./.;
