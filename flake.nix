@@ -5,7 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
-  outputs = { self, nixpkgs, description ? self.description or "Default flake description" }:
+  outputs = { self, nixpkgs, description ? "A simple TODO/FIXME reporter for code projects" }:
     let
       supportedSystems = [ "x86_64-linux" "aarch64-darwin" ];
       forAllSystems = f: nixpkgs.lib.genAttrs supportedSystems (system: f system);
