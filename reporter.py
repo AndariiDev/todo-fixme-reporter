@@ -4,28 +4,25 @@ import os
 from datetime import datetime
 
 # Define a list of directory names to ignore during traversal
-# # Add or remove directories here to customize which folders are skipped
+# Add or remove directories here to customize which folders are skipped
 directories_to_ignore = [".git", "__pycache__", "node_modules", "target", "build", "venv", ".vscode",]
-
-# # Add or remove extensions for files that will be checked
-target_extensions = [
-    ".py", ".md", ".txt", ".js", ".ts", ".c", ".h", ".cpp", ".cs", ".java", ".rs", ".nix", ".toml", ".sh", ".yaml", ".yml", ".go", ".php", ".rb", ".css", ".html", ".xml"
-]
 
 # Define a list of full path segments to ignore
 # This will cause the script to ignore any directory whose full path contains any of these stings
 paths_to_ignore = [ "/dotfiles/hyprland/themes/assets/" ] # Add more as needed
 
-found_todos = []
-
 report_file = "todo_report.txt" # change to desired filename of report
 
+# Add or remove extensions for files that will be checked
+target_extensions = [
+    ".py", ".md", ".txt", ".js", ".ts", ".c", ".h", ".cpp", ".cs", ".java", ".rs", ".nix", ".toml", ".sh", ".yaml", ".yml", ".go", ".php", ".rb", ".css", ".html", ".xml"
+]
+
+found_todos = []
+
 # fundamental python idioms
-# __name__ (Dunder Name) is a special, built-in variable in Python
-# It's automatically set to __main__ when script is run directly
-# "__main__" (Dunder Main String) is a specific string literal to identify entry point of script
-if __name__ == "__main__": # "if" block only runs if script is executed directly; prevents functions from script to be run by other scripts
-    # Initialize project_path to None
+if __name__ == "__main__":
+       
     project_path = None
 
     # sys.argv always contains script name as index 0
@@ -56,11 +53,8 @@ if __name__ == "__main__": # "if" block only runs if script is executed directly
         dirs[:] = [d for d in dirs if d not in directories_to_ignore]
         files[:] = [f for f in files if os.path.splitext(f)[1].lower() in target_extensions]
         for f in files:
-            # "tuple unpacking" = "function of os submodule to split file path"
-            # _, ext = os.path.splitext(f) # "_" = commonly used convention (not rule) to mark variable as "intentionally ignored" or "don't care"
-            # if ext.lower() in target_extensions: # .lower for case-insensitive matching
             full_file_path = os.path.join(root,f)
-            print(f"Processing file: {full_file_path}")  # FIXME: Temp print, replace with actual TODO logic later
+            print(f"Processing file: {full_file_path}")  # User feedback: informs about current file being processed
             
             with open(full_file_path, 'r', encoding="utf-8") as file_handle:
                 for line_number, current_line in enumerate(file_handle):

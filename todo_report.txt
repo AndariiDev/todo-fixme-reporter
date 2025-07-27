@@ -2,29 +2,29 @@
 
 File: /home/andarii/repos/boot.dev/hackathon 2025/test_repo/folder1/sub_folder1/test_file1.txt
   Line: 3: TODO: fill with garbage
-  (Found: 2025-07-27 01:03:51)
+  (Found: 2025-07-27 01:56:52)
 ----------------------------------------
 File: /home/andarii/repos/boot.dev/hackathon 2025/test_repo/folder1/sub_folder1/test_file1.txt
   Line: 5: // ToDo: fill with more garbage
-  (Found: 2025-07-27 01:03:51)
+  (Found: 2025-07-27 01:56:52)
 ----------------------------------------
 File: /home/andarii/repos/boot.dev/hackathon 2025/test_repo/folder1/sub_folder1/test_file1.txt
   Line: 7: # todo: fill with even more garbage
-  (Found: 2025-07-27 01:03:51)
+  (Found: 2025-07-27 01:56:52)
 ----------------------------------------
 File: /home/andarii/repos/boot.dev/hackathon 2025/test_repo/folder2/test_file2.py
   Line: 3: // todo: fill with garbage
-  (Found: 2025-07-27 01:03:51)
+  (Found: 2025-07-27 01:56:52)
 ----------------------------------------
 File: /home/andarii/repos/boot.dev/hackathon 2025/test_repo/folder2/test_file2.py
   Line: 6: todo: fill with even more garbage
-  (Found: 2025-07-27 01:03:51)
+  (Found: 2025-07-27 01:56:52)
 ----------------------------------------
 File: /home/andarii/repos/boot.dev/hackathon 2025/test_repo/folder2/test_file2.py
   Line: 9: fixme: not enough garbage
-  (Found: 2025-07-27 01:03:51)
+  (Found: 2025-07-27 01:56:52)
 ----------------------------------------
 File: /home/andarii/repos/boot.dev/hackathon 2025/test_repo/folder2/test_file2.py
   Line: 11: # FixME: still not enough garbage
-  (Found: 2025-07-27 01:03:51)
+  (Found: 2025-07-27 01:56:52)
 ----------------------------------------
