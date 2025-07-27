@@ -39,6 +39,8 @@ todo-reporter-cli /path/to/my/project/ -o my-project-todos.txt
 todo-reporter-cli . --config my_custom_settings.toml
 ```
 
+---
+
 **Non-Nix Users:**
 
 (Requires Python 3.11+ for built-in TOML support, or Python 3.8+ with pip install toml)
@@ -70,6 +72,8 @@ python reporter.py [PROJECT_PATH] [--output <filename>] [--config <config_file>]
 --config <config_file>, -c <config_file>: (Optional) Path to a TOML configuration file. Defaults to todo_reporter_config.toml in the current working directory.
 ```
 
+---
+
 **Nix Users:**
 (Requires Nix Flakes enabled: nix-command and flakes experimental features)
 
@@ -100,6 +104,7 @@ todo-reporter-cli [PROJECT_PATH] [--output <filename>] [--config <config_file>]
 
 Example: todo-reporter-cli . --output my-local-report.txt
 ```
+---
 
 ### Configuration (via todo_reporter_config.toml)
 
@@ -143,6 +148,8 @@ extensions = [
 # You can omit any section or key; the script will fall back to its built-in default values.
 ```
 
+---
+
 ## Future Improvements (Ideas for Growth)
 
 - Context Lines: Capture and include lines immediately preceding and following a TODO/FIXME for better context.
@@ -157,9 +164,13 @@ extensions = [
 
 - Notes Aggregation: Extend functionality to aggregate generic notes.txt files or specific comment blocks.
 
+---
+
 ### License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
+
+---
 
 ### Acknowledgements
 Built by AndariiDev as part of the Boot.dev Hackathon 2025. https://blog.boot.dev/news/hackathon-2025/
