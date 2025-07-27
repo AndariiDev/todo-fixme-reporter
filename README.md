@@ -22,7 +22,7 @@ The program generates a file named 'todo_report.txt' by default (this name can b
 By default, the script skips common development directories like `.git` and `__pycache__` to keep the output clean and relevant. You can easily customize which directories are ignored:
 
 1.  **Locate the `directories_to_ignore` list:** Open the `reporter.py` file in your text editor.
-2.  **Edit the list:** Find the line that defines `directories_to_ignore` (it's near the top, after the `import` statements).
+2.  **Edit the list:** Find the line that defines `directories_to_ignore` (line 8, after the `import` statements).
 3.  **Add or remove names:** Add any directory names you wish to ignore (e.g., `'my_temp_folder'`) or remove any you want the script to search. Ensure each name is a string (enclosed in single or double quotes) and separated by commas.
 4.  **Add or remove file extensions:** Add any file extensions that are relevant to your project (e.g., `'.nix', '.py', '.rs'`) or remove any you don't need. As with the directories, ensure each name is a string and separated by commas.
 Example:
