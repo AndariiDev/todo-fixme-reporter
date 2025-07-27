@@ -13,7 +13,7 @@ DEFAULT_DIRECTORIES_TO_IGNORE = [".git", "__pycache__", "node_modules", "target"
 # This will cause the script to ignore any directory whose full path contains any of these stings
 DEFAULT_PATHS_TO_IGNORE = ["/dotfiles/hyprland/themes/assets/"]  # Add more as needed
 
-# report_file = "todo_report.txt"  # change to desired filename of report
+FINAL_FALLBACK_REPORT_FILENAME = "todo_report.txt"
 
 # Add or remove extensions for files that will be checked
 DEFAULT_TARGET_EXTENSIONS = [
@@ -25,23 +25,8 @@ found_todos = []
 # fundamental python idioms
 if __name__ == "__main__":
 
-    # project_path = None
-
-    # # sys.argv always contains script name as index 0
-    # if len(sys.argv) == 1:  # exactly one argument
-    #     project_path = os.getcwd()
-    # elif len(sys.argv) == 2:  # exactly two arguments
-    #     project_path = sys.argv[1]
-    #     if not os.path.isdir:
-    #         print(f"ERROR: invalid path: {sys.argv[1]}")
-    #         sys.exit(1)
-    # else:  # more than two arguments
-    #     print("ERROR: only one optional argument accepted, use project directory")
-    #     print(f"Usage: python {sys.argv[0]} [directory_path]")
-    #     sys.exit(1)
-
     parser = argparse.ArgumentParser(
-        description="A tool to find TODO/FIXME comments and generate a report."
+        description="A tool to find TODO/FIXME comments and generate a report with the location, line number and content of each."
     )
     parser.add_argument(
         "project_path",
@@ -52,8 +37,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--output",
         "-o",  # Short option for --output
-        default="todo_report.txt",  # Default output filename
-        help="The path and filename for the generated TODO/FIXME report. Defaults to 'todo_report.txt' in the current directory."
+        default=None,  # Default to None, set in .toml
+        help="The path and filename for the generated TODO/FIXME report. Defaults to 'todo_report.txt' in the current directory. Edit in todo_reporter_config.toml"
     )
     parser.add_argument(
         "--config",
@@ -86,7 +71,7 @@ if __name__ == "__main__":
             if 'extensions' in config_data['target']:
                 target_extensions = config_data['target']['extensions']
 
-        print(f"Loaded configuration from: {config_file_path}")  # Optional feedback
+        print(f"Loaded configuration from: {config_file_path}")
 
     except FileNotFoundError:
         print(f"Configuration file '{config_file_path}' not found. Using default settings.")
@@ -94,6 +79,13 @@ if __name__ == "__main__":
         print(f"Error parsing configuration file '{config_file_path}': {e}. Using default settings.")
     except Exception as e:  # Catch any other unexpected errors
         print(f"An unexpected error occurred while reading config file: {e}. Using default settings.")
+
+    if args.output is None:  # If user did NOT specify --output on command line
+        report_filename_from_config = config_data.get('report', {}).get('output_filename') # Safely get from config
+        if report_filename_from_config is not None:
+            args.output = report_filename_from_config  # Use config value
+        else:
+            args.output = FINAL_FALLBACK_REPORT_FILENAME  # Use ultimate fallback
 
     print(f"Searching in: {args.project_path}")
 
