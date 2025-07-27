@@ -1,4 +1,4 @@
-### todo-fixme-reporter
+# todo-fixme-reporter
 A Python tool to consolidate TODO/FIXME comments and notes from code projects into a single report
 
 While this is a normal python program and can thus be run on any machine that has python3 installed, it also comes packaged in nix, meaning that it can always be run on any machine that has the nix package manager installed. 
