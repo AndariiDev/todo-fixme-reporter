@@ -1,0 +1,23 @@
+# todo_reporter_config.toml
+#
+# Customize the behavior of the TODO/FIXME Reporter.
+
+[general]
+# Example of a general setting if you had any
+# some_setting = true
+
+[ignore]
+# List of directory names to completely skip during traversal (e.g., .git, node_modules)
+directories = [".git", "__pycache__", "node_modules", "target", "build", "venv", ".vscode"]
+
+# List of full path segments to ignore (e.g., /home/user/myproject/assets/)
+paths = ["/dotfiles/hyprland/themes/assets/"]
+
+[target]
+# List of file extensions to search for (e.g., .py, .md, .nix)
+extensions = [".py", ".md", ".txt", ".js", ".ts", ".c", ".h", ".cpp", ".cs", ".java", ".rs", ".nix", ".toml", ".sh", ".yaml", ".yml", ".go", ".php", ".rb", ".css", ".html", ".xml"]
+
+# You could even add a section for report settings later
+# [report]
+# output_file_name = "custom_todos.txt"
+# include_context_lines = true

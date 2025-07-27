@@ -1,21 +1,22 @@
 #!/usr/bin/env python3
-import sys
+import tomllib
+# import sys
 import os
 import argparse
 from datetime import datetime
 
 # Define a list of directory names to ignore during traversal
 # Add or remove directories here to customize which folders are skipped
-directories_to_ignore = [".git", "__pycache__", "node_modules", "target", "build", "venv", ".vscode",]
+DEFAULT_DIRECTORIES_TO_IGNORE = [".git", "__pycache__", "node_modules", "target", "build", "venv", ".vscode",]
 
 # Define a list of full path segments to ignore
 # This will cause the script to ignore any directory whose full path contains any of these stings
-paths_to_ignore = ["/dotfiles/hyprland/themes/assets/"]  # Add more as needed
+DEFAULT_PATHS_TO_IGNORE = ["/dotfiles/hyprland/themes/assets/"]  # Add more as needed
 
 # report_file = "todo_report.txt"  # change to desired filename of report
 
 # Add or remove extensions for files that will be checked
-target_extensions = [
+DEFAULT_TARGET_EXTENSIONS = [
     ".py", ".md", ".txt", ".js", ".ts", ".c", ".h", ".cpp", ".cs", ".java", ".rs", ".nix", ".toml", ".sh", ".yaml", ".yml", ".go", ".php", ".rb", ".css", ".html", ".xml"
 ]
 
@@ -54,7 +55,45 @@ if __name__ == "__main__":
         default="todo_report.txt",  # Default output filename
         help="The path and filename for the generated TODO/FIXME report. Defaults to 'todo_report.txt' in the current directory."
     )
+    parser.add_argument(
+        "--config",
+        "-c",  # Short option for --config
+        default="todo_reporter_config.toml",  # Default config file name
+        help="Path to a TOML configuration file. Defaults to 'todo_reporter_config.toml' in the current directory."
+    )
     args = parser.parse_args()
+
+    # Initialize the lists with default values first
+    directories_to_ignore = list(DEFAULT_DIRECTORIES_TO_IGNORE)  # Use list() to make them mutable copies
+    target_extensions = list(DEFAULT_TARGET_EXTENSIONS)
+    paths_to_ignore = list(DEFAULT_PATHS_TO_IGNORE)
+
+    config_file_path = args.config
+
+    try:
+        with open(config_file_path, 'rb') as f:  # Open in binary mode ('rb') for tomllib
+            config_data = tomllib.load(f)  # Load the TOML data
+
+        # Now, try to get values from config_data and override defaults
+        # For 'ignore.directories' in TOML -> directories_to_ignore in Python
+        if 'ignore' in config_data:
+            if 'directories' in config_data['ignore']:
+                directories_to_ignore = config_data['ignore']['directories']
+            if 'paths' in config_data['ignore']:
+                paths_to_ignore = config_data['ignore']['paths']
+
+        if 'target' in config_data:
+            if 'extensions' in config_data['target']:
+                target_extensions = config_data['target']['extensions']
+
+        print(f"Loaded configuration from: {config_file_path}")  # Optional feedback
+
+    except FileNotFoundError:
+        print(f"Configuration file '{config_file_path}' not found. Using default settings.")
+    except tomllib.TOMLDecodeError as e:  # Catch specific TOML parsing errors
+        print(f"Error parsing configuration file '{config_file_path}': {e}. Using default settings.")
+    except Exception as e:  # Catch any other unexpected errors
+        print(f"An unexpected error occurred while reading config file: {e}. Using default settings.")
 
     print(f"Searching in: {args.project_path}")
 
