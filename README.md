@@ -166,9 +166,18 @@ extensions = [
 
 ---
 
-### License
+## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
+This project is licensed under the **GNU General Public License v3.0**.
+
+### Summary of terms:
+* **Source sharing:** If you modify this code and distribute it, you must also share your source code under the same license.
+* **Liability:** The software is provided "as is" without warranty.
+* **Anti-grifter protection:** You cannot take this code, make it proprietary, and sell it without giving the users the same rights to the source code.
+
+See the [LICENSE](LICENSE) file for the full legal text.
 
 ---
 
