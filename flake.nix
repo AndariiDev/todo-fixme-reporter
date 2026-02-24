@@ -1,5 +1,9 @@
 {
-  description = "A simple TODO/FIXME reporter for code projects";
+  meta = {
+    description = "A CLI utility for scanning projects for TODO/FIXME comments";
+    license = pkgs.lib.licenses.gpl3Plus;
+    maintainers = [ "AndariiDev" ];
+  };
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
