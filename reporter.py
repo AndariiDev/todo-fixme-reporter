@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-
+# todo-reporter
 #  Copyright (C) 2026 AndariiDev
+# A CLI utility for scanning coding projects for TODO/FIXME comments and generating reports.
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
