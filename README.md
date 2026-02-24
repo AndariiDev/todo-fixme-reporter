@@ -175,7 +175,7 @@ This project is licensed under the **GNU General Public License v3.0**.
 ### Summary of terms:
 * **Source sharing:** If you modify this code and distribute it, you must also share your source code under the same license.
 * **Liability:** The software is provided "as is" without warranty.
-* **Anti-grifter protection:** You cannot take this code, make it proprietary, and sell it without giving the users the same rights to the source code.
+* **Copyleft Protection:** This project is committed to remaining Free Software. Any derivative works or improvements must also be shared with the community under the same license.
 
 See the [LICENSE](LICENSE) file for the full legal text.
 
